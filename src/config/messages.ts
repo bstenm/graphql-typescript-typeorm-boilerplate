@@ -1,0 +1,1 @@
+export const emailAlreadyTaken = 'Email alrady taken';

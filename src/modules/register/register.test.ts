@@ -1,6 +1,7 @@
-import { User } from '../entity/User';
+import { User } from '../../entity/User';
 import { request } from 'graphql-request';
-import { startServer } from '../startServer';
+import { startServer } from '../../startServer';
+import { emailAlreadyTaken } from '../../config/messages';
 
 let host: string;
 const email = 'test@test.com';
@@ -21,4 +22,13 @@ test("Register user", async () => {
       const user = users[0];
       expect(user.email).toEqual(email);
       expect(user.password).not.toEqual(password);
+});
+
+test('Prevents registering new user with existing email address', async () => {
+      try {
+            await request(host, mutation);
+      } catch (err) {
+            const { message } = err.response.errors[0];
+            expect(message).toEqual(emailAlreadyTaken);
+      }
 });
