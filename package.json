@@ -22,6 +22,7 @@
       "dependencies": {
             "@gql2ts/from-schema": "1.8.1",
             "bcryptjs": "2.4.3",
+            "extendable-error": "0.1.5",
             "graphql-yoga": "1.14.12",
             "pg": "^7.3.0",
             "reflect-metadata": "^0.1.10",

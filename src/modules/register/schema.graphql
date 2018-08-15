@@ -2,11 +2,11 @@ type Query {
       bye: String!
 }
 
-type Error {
-      path: String!
-      message: String!
+type User {
+      id: ID!
+      email: String!
 }
 
 type Mutation {
-      register(email: String!, password: String!): [Error!]
+      register(email: String!, password: String!): User
 }
