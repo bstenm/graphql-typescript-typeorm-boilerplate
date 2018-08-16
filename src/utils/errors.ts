@@ -20,6 +20,6 @@ import { ValidationErrorType } from '../types/errors.d';
 
 export class ValidationError extends GraphQLError {
       constructor(errors: Array<ValidationErrorType>) {
-            super(JSON.stringify({ type: 'validation', errors }));
+            super(JSON.stringify({ type: 'VALIDATION_ERROR', errors }));
       }
 };

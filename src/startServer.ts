@@ -5,8 +5,8 @@ import * as path from 'path';
 import { port } from './config';
 import { importSchema } from 'graphql-import';
 import { GraphQLServer } from 'graphql-yoga';
-import { GraphQLSchema } from 'graphql';
 import { createTypeormConnection } from './utils/createConnection';
+import { GraphQLSchema, GraphQLError } from 'graphql';
 import { makeExecutableSchema, mergeSchemas } from 'graphql-tools';
 
 const schemas: GraphQLSchema[] = [];
@@ -31,11 +31,18 @@ const getSchema = () => {
 //       path: error.path
 // });
 
+const formatError = (error: GraphQLError) => {
+      const { type, errors } = JSON.parse(error.message);
+      const extensions = { code: type };
+      const message = JSON.stringify(errors);
+      return { ...error, extensions, message };
+};
+
 
 export const startServer = async () => {
       const server = new GraphQLServer({ schema: getSchema() });
       await createTypeormConnection();1
-      const app = await server.start({ port });
+      const app = await server.start({ port, formatError });
       console.log(`Server is running on localhost:${port}`);
       return app;
 };
