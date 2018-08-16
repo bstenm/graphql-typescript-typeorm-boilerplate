@@ -8,8 +8,6 @@ import { GraphQLServer } from 'graphql-yoga';
 import { GraphQLSchema } from 'graphql';
 import { createTypeormConnection } from './utils/createConnection';
 import { makeExecutableSchema, mergeSchemas } from 'graphql-tools';
-// import { formatError } from "apollo-errors";
-// import ValidationError from './utils/validationError';
 
 const schemas: GraphQLSchema[] = [];
 
@@ -25,21 +23,19 @@ const getSchema = () => {
       return mergeSchemas({ schemas });
 };
 
-const formatError = (error: any) => {
-      const err = error.originalError.errors[0];
-      console.log('>>>>', err, err instanceof Error);
-      return {
-            message: error.message,
-            state: error.originalError && error.originalError.state,
-            locations: error.locations,
-            path: error.path
-      }
-};
+// [REMINDER]: To be used when extending Error becomes possible
+// const formatError = (error: any) => ({
+//       message: error.message,
+//       state: error.originalError && error.originalError.state,
+//       locations: error.locations,
+//       path: error.path
+// });
+
 
 export const startServer = async () => {
       const server = new GraphQLServer({ schema: getSchema() });
-      await createTypeormConnection();
-      const app = await server.start({ port, formatError });
+      await createTypeormConnection();1
+      const app = await server.start({ port });
       console.log(`Server is running on localhost:${port}`);
       return app;
 };
