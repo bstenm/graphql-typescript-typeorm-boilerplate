@@ -38,7 +38,6 @@ const formatError = (error: GraphQLError) => {
       return { ...error, extensions, message };
 };
 
-
 export const startServer = async () => {
       const server = new GraphQLServer({ schema: getSchema() });
       await createTypeormConnection();1
