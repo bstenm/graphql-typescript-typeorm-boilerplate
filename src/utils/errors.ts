@@ -1,5 +1,6 @@
 import { GraphQLError } from 'graphql';
 import { ValidationErrorType } from '../types/errors.d';
+import { VALIDATION_ERROR } from '../config/errorTypes';
 
 // [REMINDER]: To be used when extending Error becomes possible
 // export class ValidationError extends GraphQLError {
@@ -20,6 +21,6 @@ import { ValidationErrorType } from '../types/errors.d';
 
 export class ValidationError extends GraphQLError {
       constructor(errors: Array<ValidationErrorType>) {
-            super(JSON.stringify({ type: 'VALIDATION_ERROR', errors }));
+            super(JSON.stringify({ type: VALIDATION_ERROR, errors }));
       }
 };

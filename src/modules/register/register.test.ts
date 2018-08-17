@@ -1,9 +1,13 @@
 import { User } from '../../entity/User';
 import { request } from 'graphql-request';
 import { startServer } from '../../startServer';
-import { emailAlreadyTaken, emailTooShort, emailInvalidFormat } from '../../config/messages';
+import { emailAlreadyTaken, emailTooShort, invalidEmail } from '../../config/messages';
+import { tryCatchWrapper } from '../../utils/testUtils';
+import { VALIDATION_ERROR } from '../../config/errorTypes';
 
 let host: string;
+// allow to test the error thrown without a try-catch
+const req = tryCatchWrapper(request);
 
 beforeAll(async () => {
       const app = await startServer();
@@ -11,7 +15,7 @@ beforeAll(async () => {
       host = `http://127.0.0.1:${port}`;
 });
 
-test.only("Register user", async () => {
+test("Register user", async () => {
       const email = 'test@test.com';
       const password = 'test9238409';
       const mutation = `mutation { register(email:"${email}", password:"${password}"){ id, email }}`;
@@ -25,26 +29,33 @@ test.only("Register user", async () => {
       expect(response).toEqual({ register: { email, id: user.id }});
 });
 
-test.only('Prevents registering new user with existing email address', async () => {
-            const email = 'test@test.com';
-            const password = 'test9238409z';
-            const mutation = `mutation { register(email:"${email}", password:"${password}"){ id, email }}`;
-            // register same email as in previous test
-            await request(host, mutation);
-            // expect(error.register).toHaveLength(1);
-            // expect(error.register[0].message).toEqual(emailAlreadyTaken);
-            // expect(error.register[0].path).toEqual('email');
-      });
+// !! Depends on previous test !!
+test('Prevents registering new user with existing email address', async () => {
+      const email = 'test@test.com';
+      const password = 'test9238409z';
+      const mutation = `mutation { register(email:"${email}", password:"${password}"){ id, email }}`;
+      // register same email as in previous test
+      const error = await req(host, mutation);
+      expect(error.extensions.code).toEqual(VALIDATION_ERROR);
+      const { path, message } = JSON.parse(error.message)[0];
+      expect(path).toEqual('email');
+      expect(message).toEqual(emailAlreadyTaken);
+});
 
-test('Returns error if email has an invalid format', async () => {
+test('Returns error if user enters invalid email', async () => {
       const email = 'to';
       const password = 'test9238409z';
       const mutation = `mutation { register(email:"${email}", password:"${password}"){ id, email }}`;
-      const error: any = await request(host, mutation);
-      expect(error.register).toHaveLength(2);
-      expect(error.register[0].path).toEqual('email');
-      expect(error.register[0].message).toEqual(emailTooShort);
-      expect(error.register[1].path).toEqual('email');
-      expect(error.register[1].message).toEqual(emailInvalidFormat);
+      const error = await req(host, mutation);
+      expect(error.extensions.code).toEqual(VALIDATION_ERROR);
+      const message = JSON.parse(error.message);
+      expect(message[0].path).toEqual('email');
+      expect(message[0].message).toEqual(emailTooShort);
+      expect(message[1].path).toEqual('email');
+      expect(message[1].message).toEqual(invalidEmail);
+      // expect(error.register[0].path).toEqual('email');
+      // expect(error.register[0].message).toEqual(emailTooShort);
+      // expect(error.register[1].path).toEqual('email');
+      // expect(error.register[1].message).toEqual(invalidEmail);
 });
 

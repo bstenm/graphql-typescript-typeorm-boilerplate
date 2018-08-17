@@ -22,6 +22,7 @@
       "dependencies": {
             "@gql2ts/from-schema": "1.8.1",
             "bcryptjs": "2.4.3",
+            "dotenv": "6.0.0",
             "graphql-yoga": "1.14.12",
             "pg": "^7.3.0",
             "reflect-metadata": "^0.1.10",
@@ -31,7 +32,7 @@
       },
       "scripts": {
             "start": "NODE_ENV=development nodemon --exec ts-node src/index.ts",
-            "test": "NODE_ENV=test jest --forceExit",
+            "test": "NODE_ENV=test jest --forceExit --watch",
             "gen-schema-types": "gql2ts src/schema.graphql -o src/types/schema.d.ts"
       },
       "jest": {
