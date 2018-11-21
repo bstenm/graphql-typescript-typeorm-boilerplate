@@ -1,5 +1,5 @@
-# Node + Graphql + Typescript + TypeOrm boilerplate
+# Node + Graphql + Typescript + TypeOrm playground
 
 Work in progress
 
-Will eventually have full user signin/signup flow
+Will eventually have full user signin/signup flow and ability to add items
