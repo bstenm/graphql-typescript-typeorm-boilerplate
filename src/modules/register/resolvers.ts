@@ -4,8 +4,8 @@ import * as bcryptjs from 'bcryptjs';
 import { yupSchema } from './yupSchema';
 import { yupValidate } from '../../utils/yupValidate';
 import { ResolverMap } from '../../types/graphql.utils.d';
-import { emailAlreadyTaken } from '../../config/messages';
 import { ValidationError } from '../../utils/errors';
+import { emailAlreadyTaken } from '../../config/messages';
 
 
 export const resolvers: ResolverMap =  {

@@ -1,5 +1,5 @@
 import * as yup from 'yup';
-import { emailTooShort, invalidEmail } from '../../config/messages';
+import { emailTooShort, invalidEmail, passwordTooShort } from '../../config/messages';
 
 export const yupSchema = yup.object().shape({
       email: yup
@@ -9,6 +9,6 @@ export const yupSchema = yup.object().shape({
             .email(invalidEmail),
       password: yup
             .string()
-            .min(3)
+            .min(3, passwordTooShort)
             .max(255)
 });

@@ -1,9 +1,9 @@
 import { User } from '../../entity/User';
 import { request } from 'graphql-request';
 import { startServer } from '../../startServer';
-import { emailAlreadyTaken, emailTooShort, invalidEmail } from '../../config/messages';
 import { tryCatchWrapper } from '../../utils/testUtils';
 import { VALIDATION_ERROR } from '../../config/errorTypes';
+import { emailAlreadyTaken, emailTooShort, invalidEmail, passwordTooShort } from '../../config/messages';
 
 let host: string;
 // allow to test the error thrown without a try-catch
@@ -53,9 +53,16 @@ test('Returns error if user enters invalid email', async () => {
       expect(message[0].message).toEqual(emailTooShort);
       expect(message[1].path).toEqual('email');
       expect(message[1].message).toEqual(invalidEmail);
-      // expect(error.register[0].path).toEqual('email');
-      // expect(error.register[0].message).toEqual(emailTooShort);
-      // expect(error.register[1].path).toEqual('email');
-      // expect(error.register[1].message).toEqual(invalidEmail);
+});
+
+test('Returns error if user enters invalid password', async () => {
+      const email = 'test2@test.com';
+      const password = 'te';
+      const mutation = `mutation { register(email:"${email}", password:"${password}"){ id, email }}`;
+      const error = await req(host, mutation);
+      expect(error.extensions.code).toEqual(VALIDATION_ERROR);
+      const message = JSON.parse(error.message);
+      expect(message[0].path).toEqual('password');
+      expect(message[0].message).toEqual(passwordTooShort);
 });
 
